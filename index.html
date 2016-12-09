@@ -1,0 +1,129 @@
+
+<!DOCTYPE html>
+<html ng-app="provaSenior" class="ng-scope">
+
+<head>
+    <meta charset="utf-8">
+    <title>Prova-Senior</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.9/angular.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="main.bundle.js"></script>
+
+</head>
+
+<body ng-controller="MainController">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand">Prova</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container col-ld-8 col-ld-offset-2">
+        <header>
+            <h1>Dados Meteorológicos</h1>
+        </header>
+
+
+        <div class="row">
+            <fieldset class="col-md-12">
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="estado">Estado</label>
+                            <select class="form-control" ng-model="estado" ng-change="ativaCidade()">
+                              <option value="">Selecione um Estado...</option>
+                              <option  ng-repeat="estado in estados" value="{{estado.value}}" >{{estado.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" ng-show="estadoSelecionado">
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="cidade">Cidade</label>
+                            <select class="form-control" ng-model="cidade" ng-change="ativaMeteorologia()">
+                              <option value="">Selecione uma Cidade...</option>
+                              <option  ng-repeat="cidade in cidades" value="{{cidade}}">{{cidade}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 10px">
+                    <div class="row">
+                        <div class="col-xs-12 col-md-2 pull-right">
+                            <button type="button" class="btn btn-primary btn-block" ng-click="salvarFiltros()">Salvar Filtros</button>
+                        </div>
+                    </div>
+                </div>
+        </div>
+        <div ng-show="solved">
+            <div class="row">
+                <div class="panel panel-default col-xs-12" style="margin-top: 10px">
+                    <div class="panel-heading">
+                        <h3 class="panel-title text-center">A Semana</h3>
+                    </div>
+                    <div class="panel-body">
+                        <h1>{{"Atual - " + currentTemperature.temp_c + "°C"}}</h1>
+                        <p>Umidade do Ar: {{currentTemperature.humidity}}%</p>
+                        <p>Sensação Térmica: {{currentTemperature.feelslike_c}} °C</p>
+                        <div class="panel panel-default col-md-2" style="margin-top: 10px" ng-repeat="day in days" ng-hide="currentTemperature.last_updated.indexOf(day.date) >= 0">
+                            <div class="panel-heading">
+                                <h3 class="panel-title text-center">{{getDay(day) + " - " + day.date.split("-")[2] + "/" + day.date.split("-")[1]}}</h3>
+                            </div>
+                            <div class="panel-body">
+                                <p>Máxima: {{day.day.maxtemp_c}}</p>
+                                <p>Mínima: {{day.day.mintemp_c}}</p>
+                                <p>Clima: {{day.day.condition.text}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default col-md-4" style="margin-top: 10px">
+                <div class="panel-heading">
+                    <h3 class="panel-title text-center">Status da Semana</h3>
+                </div>
+                <div class="panel-body">
+                    <div id="curve_chart" class="col-md-08" style="height: 450px"></div>
+                </div>
+            </div>
+            <div class="panel panel-default col-md-4" style="margin-top: 10px">
+                <div class="panel-heading">
+                    <h3 class="panel-title text-center">Máxima e Mínima da Semana</h3>
+                </div>
+                <div class="panel-body">
+                  <h4>A temperatura máxima da semana será de {{currentMax.TEMP}}°C e ocorrerá no(a) {{currentMax.DAY}}!</h4>
+                  <h4>A temperatura mínima da semana será de {{currentMin.TEMP}}°C e ocorrerá no(a) {{currentMin.DAY}}!</h4>
+                </div>
+            </div>
+            <div class="panel panel-default col-md-4" style="margin-top: 10px">
+                <div class="panel-heading">
+                    <h3 class="panel-title text-center">Litoral?</h3>
+                </div>
+                <div class="panel-body">
+                  <h4 ng-hide="litoral">Devido a uma temperatura não muito agradável, não recomendamos a ida ao litoral, a não ser que você goste de um friozinho! ;)</h4>
+                  <h4 ng-show="litoral">Teremos um final de semana daqueles, que tal curtir uma praia e relaxar no litoral! ;)</h4>
+                </div>
+            </div>
+
+
+
+            </fieldset>
+        </div>
+    </div>
+
+
+</body>
+
+</html>
